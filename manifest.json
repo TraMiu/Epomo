@@ -1,0 +1,39 @@
+{
+    "manifest_version": 2,
+    "name": "Epomo",
+    "version": "1.0",
+    "description": "An browser action extension for daily pomodoro timer",
+    "icons": {
+        "128": "icon128.png",
+        "48": "icon48.png",
+        "16": "icon16.png"
+    },
+
+    "commands": {
+        "_execute_browser_action": {
+            "suggested_key": {
+                "windows": "Ctrl+Y",
+                "mac": "Command+Y",
+                "chromeos": "Ctrl+U",
+                "linux": "Ctrl+J"
+                }
+        }
+    },
+
+    "browser_action": {
+        "default_icon": "icon16.png",
+        "default_popup": "popup.html"
+    },
+
+    "background": {
+        "scripts": ["timer.js"],
+        "consistent": false
+    },
+
+    "permissions" : [
+        "storage",
+        "commands",
+        "notifications"
+    ]
+
+}
