@@ -12,10 +12,10 @@
     "commands": {
         "_execute_browser_action": {
             "suggested_key": {
-                "windows": "Ctrl+Y",
-                "mac": "Command+Y",
-                "chromeos": "Ctrl+U",
-                "linux": "Ctrl+J"
+                "windows": "Alt+P",
+                "mac": "Alt+P",
+                "chromeos": "Alt+P",
+                "linux": "Alt+P"
                 }
         }
     },
