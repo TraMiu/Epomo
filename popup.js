@@ -1,24 +1,44 @@
+function average(array){
 
+    const arr = array;
+    const average = arr.reduce((a, b) => a + b, 0) / arr.length;
+    if(!isNaN(average)){
+        return average.toFixed(2);
+    } else return "";
+}
 
 $(function(){
     var today = new Date().getDate();
 
-    // $("#stats").text(chrome.extension.getBackgroundPage().getStats());
+    chrome.storage.local.set({streak: [7, 6, 7, 9, 8, 5]});
 
-    chrome.storage.sync.get(['currentDate', 'todayTotal'], function(data){
-        if(data.currentDate != today){
-            // var currentDayTotal = data.todayTotal;
-            // chrome.storage.sync.sendMessage({action: "addCurrentDayStatistic-" + currentDayTotal.toString()}, function(){
-            //     $("#stats").text(chrome.extension.getBackgroundPage().getStats());
-            // });
-            chrome.storage.sync.set({"todayTotal": 0});
-            $("#sessionToday").text(0);
-            chrome.storage.sync.set({"currentDate": today});
-        } else {
-            $("#sessionToday").text(data.todayTotal);
-        }
+    chrome.storage.local.get({
+        streak:[]
+    },
+    function(local){
+
+        chrome.storage.sync.get([
+            'currentDay', 'todayTotal'
+        ], 
+        function(sync){
+            if(today != sync.currentDay){
+                var stats = local.streak;
+                stats.push(sync.todayTotal);
+                chrome.storage.local.set({streak: stats});
+                $("#stats").text(stats);
+                $("#average").text(average(stats));
+
+                chrome.storage.sync.set({todayTotal: 0});
+                $("#sessionToday").text(0);
+                chrome.storage.sync.set({currentDay: today});
+            } else {
+                $("#sessionToday").text(sync.todayTotal);
+                $("#stats").text(local.streak);
+                $("#average").text(average(local.streak));
+            }
+        })
+        
     })
-    
 
     var remainTime = chrome.extension.getBackgroundPage().distance;
     if(!isNaN(remainTime) && remainTime > 0){
@@ -26,6 +46,22 @@ $(function(){
     } else {
         chrome.runtime.sendMessage({action: "resetClock"});
     }
+
+    $("#btnDelete").click(function(){
+        chrome.runtime.sendMessage({action: "deleteSession"});
+    })
+
+    $("#btnReset").click(function(){
+        chrome.runtime.sendMessage({action: "resetClock"});
+    })
+
+    $("#btnFreeze").click(function(){
+        chrome.runtime.sendMessage({action: "freezeClock"});
+    })
+
+    $("#btnResume").click(function(){
+        chrome.runtime.sendMessage({action: "resumeSession"});
+    })
 
     var update = setInterval(function(){
         $("#countdown").text(chrome.extension.getBackgroundPage().displayTimer());

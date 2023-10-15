@@ -13,6 +13,11 @@ chrome.runtime.onMessage.addListener(
         updateCountDownDate(distance);
       }
 
+      if (request.action == "resumeSession"){
+        updateCountDownDate(distance);
+        countDown();
+      }
+
      
       
       if (request.action == "resetClock"){
@@ -25,7 +30,7 @@ function updateCountDownDate(remainTime){
     countDownDate = new Date().getTime() + remainTime;
 }
 
-function resetTimer(min = 1){
+function resetTimer(min = 30){
     const startTime = new Date();
     countDownDate = startTime.setMinutes(startTime.getMinutes() + min);
     countDown();
@@ -39,7 +44,29 @@ function countDown(){
         var now = new Date().getTime();
     
         // Find the distance between now and the count down date
-        distance = countDownDate - now;     
+        distance = countDownDate - now;  
+        
+        chrome.runtime.onMessage.addListener(
+            function(request) {              
+              if (request.action == "deleteSession"){
+                clearInterval(update);
+                distance = -1;
+                console.log("Delete current session.")
+              } 
+            
+              if (request.action == "resetClock"){
+                clearInterval(update);
+                
+                console.log("Reset current session.")
+              } 
+
+              if (request.action == "freezeClock"){
+                clearInterval(update);
+                
+                console.log("Freeze current session.")
+              } 
+            },
+        );
 
         // If the count down is over, write some text 
         if (distance < 0) {
