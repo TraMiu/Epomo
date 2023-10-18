@@ -10,7 +10,6 @@ function average(array){
 $(function(){
     var today = new Date().getDate();
 
-    chrome.storage.local.set({streak: [7, 6, 7, 9, 8, 5]});
 
     chrome.storage.local.get({
         streak:[]
